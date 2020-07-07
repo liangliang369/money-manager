@@ -1,32 +1,38 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+import jwt_decode from "jwt-decode";
+import { getToken } from "./utils/auch.js";
+export default {
+  name: "App",
+  created() {
+    if (sessionStorage.userToken) {
+      const USER = jwt_decode(sessionStorage.userToken);
+      this.$store.dispatch("setIsAuthenticated", !this.isEmpty(USER));
+      this.$store.dispatch("setUser", USER);
+    }
+  },
+  methods: {
+    isEmpty(value) {
+      return (
+        value === undefined ||
+        value === null ||
+        (typeof value === "object" && Object.keys(value).length === 0) ||
+        (typeof value === "string" && value.trim().length === 0)
+      );
     }
   }
+};
+</script>
+<style lang="scss">
+  @import "assets/styles/base.css";
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
 }
 </style>
